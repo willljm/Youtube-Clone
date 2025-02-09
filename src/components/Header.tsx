@@ -37,10 +37,10 @@ export default function Header() {
 
           <Link href="/" className="flex items-center">
             <Image
-              src="/gif.webp" // Asegúrate de que esta imagen esté en la carpeta public
+              src="/yutu.svg"
               alt="YouTube"
-              width={90}
-              height={20}
+              width={60}
+              height={60}
               priority
             />
           </Link>
