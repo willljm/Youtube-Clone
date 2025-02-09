@@ -9,6 +9,15 @@ import Image from 'next/image'
 import VideoEditor from '@/components/VideoEditor/VideoEditor'
 import { toast } from 'sonner' // Cambiado de react-toastify a sonner
 
+function sanitizeFileName(fileName: string): string {
+  return fileName
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '') // Eliminar acentos
+    .replace(/[^a-zA-Z0-9.-]/g, '-') // Reemplazar caracteres especiales con guiones
+    .replace(/--+/g, '-') // Eliminar guiones múltiples
+    .toLowerCase();
+}
+
 export default function UploadPage() {
   const router = useRouter()
   const [uploading, setUploading] = useState(false)
@@ -67,8 +76,9 @@ export default function UploadPage() {
         return
       }
 
-      // 1. Subir video
-      const videoFileName = `${Date.now()}-${videoFile.name.replace(/\s+/g, '-')}`
+      // Sanitizar el nombre del archivo
+      const sanitizedFileName = sanitizeFileName(videoFile.name)
+      const videoFileName = `${Date.now()}-${sanitizedFileName}`
       const filePath = `uploads/${session.user.id}/${videoFileName}`
 
       console.log('Iniciando subida del video:', { filePath })
