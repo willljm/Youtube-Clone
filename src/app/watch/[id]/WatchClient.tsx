@@ -156,38 +156,39 @@ export default function WatchClient({ videoData }: WatchClientProps) {
       const isLike = type === 'like';
       
       if (reaction === type) {
-        // Remove reaction
-        await supabase
-          .from('video_reactions')
-          .delete()
+        // Eliminar reacción
+        await supabase.from('video_reactions').delete()
           .eq('user_id', user.id)
           .eq('video_id', videoData.video.id);
 
+        // Actualizar el contador de likes en la tabla de videos
+        await supabase.from('videos')
+          .update({ likes: likeCount - 1 })
+          .eq('id', videoData.video.id);
+
         setReaction(null);
-        if (isLike) {
-          setLikeCount(prev => prev - 1);
-        }
+        setLikeCount(prev => prev - 1);
       } else {
-        // Upsert reaction
-        await supabase
-          .from('video_reactions')
-          .upsert({
-            video_id: videoData.video.id,
-            user_id: user.id,
-            is_like: isLike,
-            created_at: new Date().toISOString()
-          });
+        // Agregar/actualizar reacción
+        await supabase.from('video_reactions').upsert({
+          video_id: videoData.video.id,
+          user_id: user.id,
+          is_like: isLike,
+          created_at: new Date().toISOString()
+        });
+
+        // Actualizar el contador de likes en la tabla de videos
+        const newLikeCount = reaction === 'like' ? likeCount - 1 : likeCount + 1;
+        await supabase.from('videos')
+          .update({ likes: newLikeCount })
+          .eq('id', videoData.video.id);
 
         setReaction(type);
-        if (isLike) {
-          setLikeCount(prev => prev + 1);
-        } else if (reaction === 'like') {
-          setLikeCount(prev => prev - 1);
-        }
+        setLikeCount(newLikeCount);
       }
     } catch (error) {
-      console.error('Error managing reaction:', error);
-      toast.error('No se pudo procesar tu reacción');
+      console.error('Error:', error);
+      toast.error('Error al procesar tu reacción');
     }
   };
 

@@ -17,5 +17,37 @@ export default function SearchClient() {
   const [videos, setVideos] = useState<SearchVideo[]>([])
   const [loading, setLoading] = useState(true)
 
-  // ...existing code...  (mantener el resto del código del componente original)
+  useEffect(() => {
+    async function searchVideos() {
+      if (!query) {
+        setVideos([])
+        setLoading(false)
+        return
+      }
+
+      try {
+        const { data, error } = await supabase
+          .from('videos')
+          .select(`
+            *,
+            profiles: user_id (
+              id,
+              full_name,
+              avatar_url
+            )
+          `)
+          .or(`title.ilike.%${query}%, description.ilike.%${query}%`)
+          .order('created_at', { ascending: false })
+
+        if (error) throw error
+        setVideos(data || [])
+      } catch (error) {
+        console.error('Error searching videos:', error)
+      } finally {
+        setLoading(false)
+      }
+    }
+
+    searchVideos()
+  }, [query])
 }

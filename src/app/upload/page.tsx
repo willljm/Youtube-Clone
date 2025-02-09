@@ -59,7 +59,10 @@ export default function UploadPage() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    if (!file || !user) return
+    if (!file || !thumbnail || !user) {
+      setError('El video y la miniatura son obligatorios')
+      return
+    }
 
     try {
       setUploading(true)
@@ -168,7 +171,7 @@ export default function UploadPage() {
 
         <div>
           <label className="block mb-2 text-sm font-medium">
-            Miniatura 
+            Miniatura (Obligatorio)
           </label>
           <input
             type="file"
@@ -176,6 +179,7 @@ export default function UploadPage() {
             onChange={handleThumbnailChange}
             className="w-full p-2 border rounded"
             disabled={uploading}
+            required
           />
         </div>
 

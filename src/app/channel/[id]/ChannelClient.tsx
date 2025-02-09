@@ -115,12 +115,21 @@ export default function ChannelClient({ initialData }: ChannelClientProps) {
       return
     }
 
-    if (isLoading) return
-
     try {
       setIsLoading(true)
       
-      if (isSubscribed) {
+      const { data: existingSub, error: checkError } = await supabase
+        .from('subscriptions')
+        .select('*')
+        .eq('user_id', user.id)
+        .eq('channel_id', initialData.channel.id)
+        .single()
+
+      if (checkError && checkError.code !== 'PGRST116') {
+        throw checkError
+      }
+
+      if (existingSub) {
         const { error } = await supabase
           .from('subscriptions')
           .delete()
@@ -128,57 +137,26 @@ export default function ChannelClient({ initialData }: ChannelClientProps) {
           .eq('channel_id', initialData.channel.id)
 
         if (error) throw error
-        
         setIsSubscribed(false)
-        setHasNotifications(false)
-        setSubscribersCount(prev => Math.max(0, prev - 1))
         toast.success('Suscripción cancelada')
       } else {
-        // Primero verificar si ya existe la suscripción
-        const { data: existingSub } = await supabase
-          .from('subscriptions')
-          .select('id')
-          .eq('user_id', user.id)
-          .eq('channel_id', initialData.channel.id)
-          .maybeSingle()
-
-        if (existingSub) {
-          setIsSubscribed(true)
-          toast.error('Ya estás suscrito a este canal')
-          return
-        }
-
         const { error } = await supabase
           .from('subscriptions')
           .insert({
             user_id: user.id,
             channel_id: initialData.channel.id,
-            notifications_enabled: false
+            created_at: new Date().toISOString()
           })
 
         if (error) throw error
-        
         setIsSubscribed(true)
-        setSubscribersCount(prev => prev + 1)
-        toast.success('Suscrito al canal')
+        toast.success('¡Suscrito al canal!')
       }
-      
+
       await loadSubscribersCount()
     } catch (error) {
       console.error('Error:', error)
       toast.error('Error al procesar la suscripción')
-      
-      // Recargar el estado actual
-      const { data } = await supabase
-        .from('subscriptions')
-        .select('id, notifications_enabled')
-        .eq('user_id', user.id)
-        .eq('channel_id', initialData.channel.id)
-        .maybeSingle()
-
-      setIsSubscribed(!!data)
-      setHasNotifications(data?.notifications_enabled || false)
-      await loadSubscribersCount()
     } finally {
       setIsLoading(false)
     }
