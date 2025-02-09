@@ -10,8 +10,11 @@ import MobileNav from '@/components/MobileNav'
 const inter = Inter({ subsets: ['latin'] })
 
 export const metadata: Metadata = {
-  title: 'Youtube Clone',
+  title: 'Yutu - Clone',
   description: 'A YouTube clone built with Next.js and Supabase',
+  icons: {
+    icon: '/yutu.svg',
+  },
 }
 
 export default function RootLayout({

@@ -41,10 +41,10 @@ export default function AuthPage() {
         <div className="mb-8 text-center">
           <Image
             src="/yutu.svg"
-            alt="YouTube"
+            alt="Yutu"
             width={30}
             height={20}
-            className="mx-auto mb-4 "
+            className="mx-auto mb-4 dark:invert"
           />
           <h1 className="mb-2 text-2xl font-bold text-white">Iniciar sesión</h1>
           <p className="text-zinc-400">
