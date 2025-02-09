@@ -54,8 +54,8 @@ export default function UploadPage() {
   }
 
   const handleUpload = async () => {
-    if (!videoFile || !title.trim()) {
-      toast.error('El título es requerido')
+    if (!videoFile || !title.trim() || !thumbnailPreview) {
+      toast.error('El título y la miniatura son requeridos')
       return
     }
 
@@ -181,7 +181,7 @@ export default function UploadPage() {
                   {/* Thumbnail */}
                   <div className="space-y-2">
                     <label className="block text-sm font-medium text-zinc-400">
-                      Miniatura
+                      Miniatura (Obligatorio)
                     </label>
                     <div className="relative overflow-hidden rounded-lg aspect-video bg-zinc-800">
                       {thumbnailPreview ? (
@@ -208,10 +208,14 @@ export default function UploadPage() {
                             accept="image/*"
                             className="hidden"
                             onChange={handleThumbnailSelect}
+                            required
                           />
                         </label>
                       )}
                     </div>
+                    <p className="mt-1 text-sm text-zinc-400">
+                      La miniatura es obligatoria para subir el video
+                    </p>
                   </div>
                 </div>
 
