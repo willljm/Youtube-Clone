@@ -30,7 +30,16 @@ const nextConfig = {
       {
         protocol: 'https',
         hostname: 'xgdpehqfqnmpwleifprj.supabase.co'
+      },
+      {
+        protocol: 'https',
+        hostname: 'lh3.googleusercontent.com'
       }
+    ],
+    domains: [
+      'lh3.googleusercontent.com',
+      'avatars.githubusercontent.com',
+      'xgdpehqfqnmpwleifprj.supabase.co'
     ]
   },
   pageExtensions: ['ts', 'tsx', 'js', 'jsx'],

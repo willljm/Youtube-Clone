@@ -36,15 +36,13 @@ export default function Header() {
           </button>
 
           <Link href="/" className="flex items-center">
-            <div className="relative w-[90px] h-[90px]">
-              <Image 
-                src="/gif.webp" 
-                alt="YouTube" 
-                fill
-                className="object-contain"
-                priority
-              />
-            </div>
+            <Image
+              src="/youtube-logo.png" // Asegúrate de que esta imagen esté en la carpeta public
+              alt="YouTube"
+              width={90}
+              height={20}
+              priority
+            />
           </Link>
         </div>
 
