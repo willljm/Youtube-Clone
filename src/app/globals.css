@@ -1,0 +1,127 @@
+@import url('https://fonts.googleapis.com/css2?family=Hanken+Grotesk:ital,wght@0,100..900;1,100..900&family=Roboto:ital,wght@0,100..900;1,100..900&display=swap');
+
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+body{
+    font-family: "Roboto", sans-serif;
+    background-color: #0f0f0f;
+}
+
+@layer base {
+  :root {
+        --radius: 0.5rem;
+    }
+}
+
+/* Scrollbar personalizado */
+.custom-scrollbar::-webkit-scrollbar {
+  width: 8px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: rgba(24, 24, 27, 0.5);
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background: rgba(113, 113, 122, 0.5);
+  border-radius: 4px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: rgba(113, 113, 122, 0.7);
+}
+
+.form-input {
+  @apply w-full px-4 py-3 transition-all duration-200 border rounded-lg outline-none bg-zinc-800/50 border-zinc-700/30 focus:border-blue-500/50 focus:ring-2 focus:ring-blue-500/20;
+}
+
+.btn-primary {
+  @apply px-6 py-2.5 bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-500 hover:to-blue-600 text-white rounded-lg font-medium transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed shadow-lg shadow-blue-900/20 hover:shadow-blue-900/30;
+}
+
+.btn-secondary {
+  @apply px-6 py-2.5 bg-zinc-800 hover:bg-zinc-700 text-zinc-300 hover:text-white rounded-lg font-medium transition-all duration-200 border border-zinc-700/30 hover:border-zinc-600/50;
+}
+
+/* Estilos para checkbox */
+.checkbox-wrapper {
+  @apply relative flex items-center gap-3;
+}
+
+.checkbox-input {
+  @apply absolute w-5 h-5 opacity-0 cursor-pointer;
+}
+
+.checkbox-box {
+  @apply flex items-center justify-center w-5 h-5 transition-colors duration-200 border-2 rounded-md border-zinc-600;
+}
+
+.checkbox-input:checked + .checkbox-box {
+  @apply bg-blue-500 border-blue-500;
+}
+
+.checkbox-label {
+  @apply text-sm select-none text-zinc-300;
+}
+
+/* Estilos para el formulario de subida de videos */
+.upload-form-section {
+  @apply p-6 space-y-6 border bg-zinc-800/50 rounded-xl border-zinc-700/30;
+}
+
+.upload-form-input {
+  @apply w-full px-4 py-2 transition-all duration-200 border rounded-lg bg-zinc-900 border-zinc-700 focus:outline-none focus:ring-2 focus:ring-blue-500;
+}
+
+.upload-form-textarea {
+  @apply w-full px-4 py-2 bg-zinc-900 border border-zinc-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 min-h-[100px] resize-y transition-all duration-200;
+}
+
+.upload-form-dropzone {
+  @apply relative flex items-center justify-center w-full h-32 transition-colors border-2 border-dashed rounded-lg cursor-pointer border-zinc-700 hover:border-zinc-500 bg-zinc-900/50 hover:bg-zinc-900/80;
+}
+
+.upload-form-hashtag {
+  @apply inline-flex items-center gap-1 px-3 py-1 text-sm text-blue-400 transition-colors rounded-full bg-blue-500/20 hover:bg-blue-500/30;
+}
+
+.upload-form-social-input {
+  @apply flex-1 px-4 py-2 transition-all duration-200 border rounded-lg bg-zinc-900 border-zinc-700 focus:outline-none focus:ring-2;
+}
+
+.upload-form-social-input[data-network="instagram"] {
+  @apply focus:ring-pink-500;
+}
+
+.upload-form-social-input[data-network="twitter"] {
+  @apply focus:ring-blue-400;
+}
+
+.upload-form-social-input[data-network="facebook"] {
+  @apply focus:ring-blue-600;
+}
+
+.upload-form-button {
+  @apply flex items-center gap-2 px-4 py-2 font-medium transition-colors rounded-lg;
+}
+
+.upload-form-button-primary {
+  @apply text-white bg-blue-500 hover:bg-blue-600 disabled:opacity-50 disabled:cursor-not-allowed;
+}
+
+.upload-form-button-secondary {
+  @apply text-zinc-300 hover:text-white;
+}
+
+/* Animación de carga */
+.upload-progress-spinner {
+  @apply w-4 h-4 border-2 border-white rounded-full border-t-transparent animate-spin;
+}
+
+/* Scroll personalizado para el modal */
+.upload-form-modal {
+  @apply max-h-[80vh] overflow-y-auto custom-scrollbar;
+}
