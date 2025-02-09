@@ -15,6 +15,8 @@ interface VideoCardProps {
 
 export default function VideoCard({ video, hideChannel = false, horizontal = false }: VideoCardProps) {
   const [showMenu, setShowMenu] = useState(false)
+  const thumbnailUrl = video.thumbnail_url || '/default-thumbnail.png'
+  const channelAvatarUrl = video.profiles?.avatar_url || '/default-avatar.png'
 
   return (
     <div 
@@ -27,11 +29,12 @@ export default function VideoCard({ video, hideChannel = false, horizontal = fal
           {/* Thumbnail */}
           <div className={`relative ${horizontal ? 'w-full md:w-60 md:shrink-0' : 'w-full'} aspect-video rounded-xl overflow-hidden bg-zinc-800`}>
             <Image
-              src={video.thumbnail_url || '/thumbnail-placeholder.png'}
+              src={thumbnailUrl}
               alt={video.title}
               fill
-              className="object-cover"
+              className="object-cover rounded-lg"
               sizes={horizontal ? '(max-width: 768px) 100vw, 240px' : '100%'}
+              priority
             />
             {video.duration && (
               <div className="absolute px-1 text-xs text-white rounded right-1 bottom-1 bg-black/80">
@@ -45,10 +48,12 @@ export default function VideoCard({ video, hideChannel = false, horizontal = fal
             {!hideChannel && video.profiles && (
               <div className="relative w-9 h-9 shrink-0">
                 <Image
-                  src={video.profiles.avatar_url || '/avatar-placeholder.png'}
+                  src={channelAvatarUrl}
                   alt={video.profiles.full_name || 'Usuario'}
-                  fill
+                  width={36}
+                  height={36}
                   className="object-cover rounded-full"
+                  priority
                 />
               </div>
             )}

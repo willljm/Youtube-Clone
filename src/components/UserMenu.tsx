@@ -19,7 +19,15 @@ import {
 } from 'lucide-react'
 
 export default function UserMenu() {
-  const { user } = useUser()
+  const { user, signOut } = useUser()
+
+  if (!user?.user_metadata) {
+    return null;
+  }
+
+  const avatarUrl = user.user_metadata.avatar_url || '/default-avatar.png'
+  const fullName = user.user_metadata.full_name || 'Usuario'
+
   const [isOpen, setIsOpen] = useState(false)
 
   const handleSignOut = async () => {
@@ -32,20 +40,19 @@ export default function UserMenu() {
     }
   }
 
-  if (!user) return null
-
   return (
     <div className="relative">
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className="flex items-center space-x-2"
+        className="overflow-hidden rounded-full w-8 h-8"
       >
         <Image
-          src={user.user_metadata.picture}
-          alt={user.user_metadata.full_name}
+          src={avatarUrl}
+          alt={fullName}
           width={32}
           height={32}
-          className="rounded-full"
+          className="object-cover"
+          priority
         />
       </button>
 
@@ -54,14 +61,14 @@ export default function UserMenu() {
           <div className="px-4 py-2 border-b border-zinc-700">
             <div className="flex items-center space-x-2">
               <Image
-                src={user.user_metadata.picture}
-                alt={user.user_metadata.full_name}
+                src={avatarUrl}
+                alt={fullName}
                 width={40}
                 height={40}
                 className="rounded-full"
               />
               <div>
-                <p className="font-medium text-white">{user.user_metadata.full_name}</p>
+                <p className="font-medium text-white">{fullName}</p>
                 <p className="text-sm text-gray-400">@{user.user_metadata.email}</p>
               </div>
             </div>
