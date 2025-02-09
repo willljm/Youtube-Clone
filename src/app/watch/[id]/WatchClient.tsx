@@ -198,7 +198,18 @@ export default function WatchClient({ videoData }: WatchClientProps) {
     }
 
     try {
-      if (isSubscribed) {
+      setIsLoading(true)
+      
+      // Verificar si ya existe la suscripción
+      const { data: existingSub } = await supabase
+        .from('subscriptions')
+        .select('*')
+        .eq('user_id', user.id)
+        .eq('channel_id', videoData.channel.id)
+        .single()
+
+      if (existingSub) {
+        // Si existe, eliminar la suscripción
         const { error } = await supabase
           .from('subscriptions')
           .delete()
@@ -207,24 +218,28 @@ export default function WatchClient({ videoData }: WatchClientProps) {
 
         if (error) throw error
         setIsSubscribed(false)
-        setSubscriberCount(prev => prev - 1)
         toast.success('Suscripción cancelada')
       } else {
+        // Si no existe, crear nueva suscripción
         const { error } = await supabase
           .from('subscriptions')
           .insert({
             user_id: user.id,
-            channel_id: videoData.channel.id
+            channel_id: videoData.channel.id,
+            created_at: new Date().toISOString()
           })
 
         if (error) throw error
         setIsSubscribed(true)
-        setSubscriberCount(prev => prev + 1)
-        toast.success('¡Gracias por suscribirte!')
+        toast.success('¡Suscrito al canal!')
       }
+
+      await getSubscriberCount() // Actualizar contador
     } catch (error) {
-      console.error('Error managing subscription:', error)
-      toast.error('No se pudo procesar tu suscripción')
+      console.error('Error:', error)
+      toast.error('Error al procesar la suscripción')
+    } finally {
+      setIsLoading(false)
     }
   }
 

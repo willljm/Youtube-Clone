@@ -65,18 +65,25 @@ export default function UploadPage() {
       setUploading(true)
       setError(null)
 
-      // 1. Generar nombres de archivo únicos
+      // 1. Obtener metadata del usuario actual
+      const { data: userData } = await supabase
+        .from('profiles')
+        .select('*')
+        .eq('id', user.id)
+        .single()
+
+      // 2. Subir el video con los datos del usuario
       const videoFileName = `${Date.now()}-${file.name.replace(/[^a-zA-Z0-9.-]/g, '_').toLowerCase()}`
       const thumbnailFileName = thumbnail 
         ? `${Date.now()}-${thumbnail.name.replace(/[^a-zA-Z0-9.-]/g, '_').toLowerCase()}`
         : null
 
-      // 2. Validar el tipo de archivo
+      // 3. Validar el tipo de archivo
       if (!file.type.startsWith('video/')) {
         throw new Error('El archivo debe ser un video')
       }
 
-      // 3. Subir el video
+      // 4. Subir el video
       const { error: videoError } = await supabase.storage
         .from('videos')
         .upload(videoFileName, file)
@@ -85,7 +92,7 @@ export default function UploadPage() {
         throw new Error(`Error al subir el video: ${videoError.message}`)
       }
 
-      // 4. Subir la miniatura si existe
+      // 5. Subir la miniatura si existe
       let thumbnailPath = null
       if (thumbnail) {
         const { error: thumbnailError } = await supabase.storage
@@ -98,7 +105,7 @@ export default function UploadPage() {
         thumbnailPath = thumbnailFileName
       }
 
-      // 5. Crear el registro en la base de datos
+      // 6. Crear el registro en la base de datos con los datos del usuario
       const { error: dbError } = await supabase
         .from('videos')
         .insert({
@@ -106,14 +113,16 @@ export default function UploadPage() {
           description,
           video_path: videoFileName,
           thumbnail_path: thumbnailPath,
-          user_id: user.id
+          user_id: user.id,
+          user_avatar: userData?.avatar_url || user.user_metadata?.avatar_url,
+          user_name: userData?.full_name || user.user_metadata?.full_name
         })
 
       if (dbError) {
         throw new Error(`Error al guardar en la base de datos: ${dbError.message}`)
       }
 
-      // 6. Redirigir a la página principal
+      // 7. Redirigir a la página principal
       router.push('/')
       router.refresh()
     } catch (err: any) {

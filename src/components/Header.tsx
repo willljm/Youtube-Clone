@@ -39,8 +39,8 @@ export default function Header() {
             <Image
               src="/yutu.svg"
               alt="YouTube"
-              width={40}
-              height={40}
+              width={30}
+              height={30}
               priority
             />
           </Link>

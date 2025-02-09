@@ -16,7 +16,8 @@ interface VideoCardProps {
 export default function VideoCard({ video, hideChannel = false, horizontal = false }: VideoCardProps) {
   const [showMenu, setShowMenu] = useState(false)
   const thumbnailUrl = video.thumbnail_url || '/default-thumbnail.png'
-  const channelAvatarUrl = video.profiles?.avatar_url || '/default-avatar.png'
+  const channelAvatarUrl = video.user_avatar || video.profiles?.avatar_url || '/default-avatar.png'
+  const channelName = video.user_name || video.profiles?.full_name || 'Usuario'
 
   return (
     <div 
@@ -45,11 +46,11 @@ export default function VideoCard({ video, hideChannel = false, horizontal = fal
 
           {/* Info */}
           <div className="flex gap-3">
-            {!hideChannel && video.profiles && (
+            {!hideChannel && (
               <div className="relative w-9 h-9 shrink-0">
                 <Image
                   src={channelAvatarUrl}
-                  alt={video.profiles.full_name || 'Usuario'}
+                  alt={channelName}
                   width={36}
                   height={36}
                   className="object-cover rounded-full"
@@ -63,7 +64,7 @@ export default function VideoCard({ video, hideChannel = false, horizontal = fal
               </h3>
               {!hideChannel && video.profiles && (
                 <div className="mt-1 text-sm text-zinc-400">
-                  {video.profiles.full_name}
+                  {channelName}
                 </div>
               )}
               <div className="flex items-center gap-1 text-sm text-zinc-400">
