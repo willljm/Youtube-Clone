@@ -1,5 +1,14 @@
 const CHUNK_SIZE = 5 * 1024 * 1024 // 5MB chunks
 
+function sanitizeFileName(fileName: string): string {
+  return fileName
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '') // Eliminar acentos
+    .replace(/[^a-zA-Z0-9-_.]/g, '-') // Reemplazar caracteres especiales por guiones
+    .replace(/--+/g, '-') // Eliminar guiones múltiples
+    .toLowerCase();
+}
+
 export async function uploadInChunks(
   file: File,
   supabase: any,
@@ -69,5 +78,29 @@ export async function uploadInChunks(
   } catch (error) {
     console.error('Error al combinar los chunks:', error)
     throw error
+  }
+}
+
+export async function uploadFile(file: File, path: string): Promise<string> {
+  const uniqueId = crypto.randomUUID();
+  const extension = file.name.split('.').pop();
+  const sanitizedName = sanitizeFileName(file.name);
+  const finalFileName = `${uniqueId}-${sanitizedName}`;
+  const filePath = `${path}/${finalFileName}`;
+
+  try {
+    const { error } = await supabase.storage
+      .from('uploads')
+      .upload(filePath, file, {
+        cacheControl: '3600',
+        upsert: false
+      });
+
+    if (error) throw error;
+
+    return filePath;
+  } catch (error) {
+    console.error('Error uploading file:', error);
+    throw new Error('Error al subir el archivo');
   }
 }

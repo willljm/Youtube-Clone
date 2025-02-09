@@ -36,6 +36,15 @@ const nextConfig = {
   pageExtensions: ['ts', 'tsx', 'js', 'jsx'],
   generateBuildId: async () => {
     return 'build-' + Date.now()
+  },
+  async redirects() {
+    return [
+      {
+        source: '/auth/callback',
+        destination: '/',
+        permanent: false,
+      },
+    ]
   }
 }
 

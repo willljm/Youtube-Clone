@@ -14,6 +14,7 @@ export default function UploadPage() {
   const [description, setDescription] = useState('')
   const [uploading, setUploading] = useState(false)
   const [error, setError] = useState<string | null>(null)
+  const [videoUrl, setVideoUrl] = useState<string | null>(null)
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
@@ -26,6 +27,35 @@ export default function UploadPage() {
       setThumbnail(e.target.files[0])
     }
   }
+
+  const handleUpload = async (file: File) => {
+    try {
+      setUploading(true);
+      setError(null);
+
+      // Validar el tamaño del archivo (por ejemplo, máximo 100MB)
+      const maxSize = 100 * 1024 * 1024; // 100MB en bytes
+      if (file.size > maxSize) {
+        throw new Error('El archivo es demasiado grande. El tamaño máximo es 100MB.');
+      }
+
+      const filePath = await uploadFile(file, 'videos');
+      const { data: url } = supabase.storage.from('uploads').getPublicUrl(filePath);
+
+      if (!url.publicUrl) {
+        throw new Error('Error al obtener la URL del video');
+      }
+
+      setVideoUrl(url.publicUrl);
+      toast.success('Video subido exitosamente');
+    } catch (error) {
+      console.error('Error:', error);
+      setError(error instanceof Error ? error.message : 'Error en la subida');
+      toast.error('Error al subir el video');
+    } finally {
+      setUploading(false);
+    }
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
