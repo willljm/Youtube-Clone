@@ -47,16 +47,18 @@ export default function VideoCard({ video, hideChannel = false, horizontal = fal
           {/* Info */}
           <div className="flex gap-3">
             {!hideChannel && (
-              <div className="relative w-9 h-9 shrink-0">
-                <Image
-                  src={channelAvatarUrl}
-                  alt={channelName}
-                  width={36}
-                  height={36}
-                  className="object-cover rounded-full"
-                  priority
-                />
-              </div>
+              <Link href={`/channel/${video.user_id}`}>
+                <div className="relative w-9 h-9 shrink-0">
+                  <Image
+                    src={channelAvatarUrl}
+                    alt={channelName}
+                    width={36}
+                    height={36}
+                    className="rounded-full object-cover"
+                    priority
+                  />
+                </div>
+              </Link>
             )}
             <div className="flex-1 min-w-0">
               <h3 className="text-sm font-medium line-clamp-2">

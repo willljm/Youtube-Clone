@@ -12,6 +12,7 @@ import VideoPlayer from '@/components/VideoPlayer'
 import RelatedVideos from '@/components/RelatedVideos'
 import Comments from '@/components/Comments'
 import { addToWatchLater } from '@/lib/playlist' // Añadir esta importación
+import SubscribeButton from '@/components/SubscribeButton'
 
 interface VideoData {
   video: {
@@ -256,7 +257,8 @@ export default function WatchClient({ videoData }: WatchClientProps) {
         <div className="p-3">
           <h1 className="mb-3 text-xl font-semibold">{videoData.video.title}</h1>
           
-          <div className="flex flex-wrap items-center justify-between gap-4 mb-4">
+          {/* Channel info and subscribe button */}
+          <div className="flex items-center justify-between mb-4">
             <div className="flex items-center gap-4">
               <Link href={`/channel/${videoData.channel.id}`}>
                 <div className="flex items-center gap-3">
@@ -276,17 +278,7 @@ export default function WatchClient({ videoData }: WatchClientProps) {
               </Link>
 
               {!isVideoOwner && (
-                <button
-                  onClick={handleSubscribe}
-                  disabled={isLoading}
-                  className={`px-4 py-2 rounded-full font-medium ${
-                    isSubscribed
-                      ? 'bg-[#272727] hover:bg-[#3f3f3f] text-white'
-                      : 'bg-white text-black hover:bg-zinc-200'
-                  }`}
-                >
-                  {isLoading ? 'Registrate para suscribrirse' : isSubscribed ? 'Suscrito' : 'Suscribirse'}
-                </button>
+                <SubscribeButton channelId={videoData.channel.id} />
               )}
             </div>
 
