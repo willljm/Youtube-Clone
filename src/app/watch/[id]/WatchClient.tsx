@@ -257,8 +257,9 @@ export default function WatchClient({ videoData }: WatchClientProps) {
         <div className="p-3">
           <h1 className="mb-3 text-xl font-semibold">{videoData.video.title}</h1>
           
-          {/* Channel info and subscribe button */}
-          <div className="flex items-center justify-between mb-4">
+          {/* Channel info and actions */}
+          <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+            {/* Channel info */}
             <div className="flex items-center gap-4">
               <Link href={`/channel/${videoData.channel.id}`}>
                 <div className="flex items-center gap-3">
@@ -282,21 +283,23 @@ export default function WatchClient({ videoData }: WatchClientProps) {
               )}
             </div>
 
-            <div className="flex items-center gap-2">
+            {/* Action buttons - Mejorado para móvil */}
+            <div className="flex flex-wrap items-center gap-2">
+              {/* Like/Dislike buttons */}
               <div className="flex items-center bg-[#272727] rounded-full">
                 <button
                   onClick={() => handleReaction('like')}
-                  className={`flex items-center gap-2 px-4 py-2 rounded-l-full hover:bg-[#3f3f3f] ${
+                  className={`flex items-center gap-2 px-3 py-2 sm:px-4 rounded-l-full hover:bg-[#3f3f3f] ${
                     reaction === 'like' ? 'text-blue-500' : ''
                   }`}
                 >
                   <ThumbsUp className="w-5 h-5" />
-                  <span>{formatViewCount(likeCount)}</span>
+                  <span className="text-sm sm:text-base">{formatViewCount(likeCount)}</span>
                 </button>
                 <div className="h-5 w-[1px] bg-zinc-700"></div>
                 <button
                   onClick={() => handleReaction('dislike')}
-                  className={`px-4 py-2 rounded-r-full hover:bg-[#3f3f3f] ${
+                  className={`px-3 py-2 sm:px-4 rounded-r-full hover:bg-[#3f3f3f] ${
                     reaction === 'dislike' ? 'text-blue-500' : ''
                   }`}
                 >
@@ -304,17 +307,19 @@ export default function WatchClient({ videoData }: WatchClientProps) {
                 </button>
               </div>
 
+              {/* Share button */}
               <button
                 onClick={() => {
                   navigator.clipboard.writeText(window.location.href)
                   toast.success('Enlace copiado al portapapeles')
                 }}
-                className="flex items-center gap-2 px-4 py-2 bg-[#272727] rounded-full hover:bg-[#3f3f3f]"
+                className="flex items-center gap-2 px-3 py-2 sm:px-4 bg-[#272727] rounded-full hover:bg-[#3f3f3f]"
               >
                 <Share2 className="w-5 h-5" />
-                <span>Compartir</span>
+                <span className="text-sm sm:text-base hidden sm:inline">Compartir</span>
               </button>
 
+              {/* More options menu */}
               <div className="relative">
                 <button
                   onClick={() => setShowMoreOptions(!showMoreOptions)}

@@ -1,7 +1,7 @@
 'use client'
 
-import React from 'react'
 import { useState, useEffect } from 'react'
+import { useRouter, useSearchParams } from 'next/navigation'
 import { supabase } from '@/lib/supabase'
 import { useUser } from '@/hooks/useUser'
 import { formatDistanceToNow } from 'date-fns'
@@ -9,6 +9,7 @@ import { es } from 'date-fns/locale'
 import Image from 'next/image'
 import Link from 'next/link'
 import { formatViewCount } from '@/utils/format'
+import { Upload } from 'lucide-react'
 
 export default function StudioPage() {
   const { user } = useUser()
@@ -46,7 +47,16 @@ export default function StudioPage() {
     <div className="p-4 md:p-8">
       <div className="space-y-6">
         <div className="flex flex-col justify-between gap-4 md:flex-row md:items-center">
-          <h1 className="text-2xl font-bold text-white">Contenido del canal</h1>
+          <div className="flex items-center justify-between">
+            <h1 className="text-2xl font-bold text-white">Contenido del canal</h1>
+            <Link 
+              href="/studio/upload"
+              className="flex items-center gap-2 px-4 py-2 text-white transition-colors bg-blue-600 rounded-lg hover:bg-blue-700"
+            >
+              <Upload className="w-5 h-5" />
+              <span>Subir video</span>
+            </Link>
+          </div>
           <p className="text-zinc-400">{videos.length} videos</p>
         </div>
 
