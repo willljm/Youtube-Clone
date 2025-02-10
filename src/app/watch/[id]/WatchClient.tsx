@@ -12,7 +12,6 @@ import VideoPlayer from '@/components/VideoPlayer'
 import RelatedVideos from '@/components/RelatedVideos'
 import Comments from '@/components/Comments'
 import { addToWatchLater } from '@/lib/playlist' // Añadir esta importación
-import SubscribeButton from '@/components/SubscribeButton' // Añadir esta importación
 
 interface VideoData {
   video: {
@@ -236,7 +235,7 @@ export default function WatchClient({ videoData }: WatchClientProps) {
         toast.success('¡Suscrito al canal!')
       }
 
-      await getSubscriberCount() // Actualizar contador
+      await getSubscriberCount() 
     } catch (error) {
       console.error('Error:', error)
       toast.error('Error al procesar la suscripción')
@@ -246,8 +245,7 @@ export default function WatchClient({ videoData }: WatchClientProps) {
   }
 
   return (
-    <div className="flex flex-col lg:flex-row max-w-[1300px] mx-auto mb-8 mt-4"> {/* Añadido mt-4 */}
-      {/* Video section */}
+    <div className="flex flex-col lg:flex-row max-w-[1300px] mx-auto mb-8 mt-4">
       <div className="flex-1 lg:max-w-[70%]">
         <div className="relative pt-[56.25%] w-full">
           <div className="absolute inset-0">
@@ -255,9 +253,7 @@ export default function WatchClient({ videoData }: WatchClientProps) {
           </div>
         </div>
 
-        {/* Video info - Reducido el padding superior */}          {/* Channel and actions bar */}
-
-        <div className="p-3"> {/* Cambiado de p-4 a p-3 */}
+        <div className="p-3">
           <h1 className="mb-3 text-xl font-semibold">{videoData.video.title}</h1>
           
           <div className="flex flex-wrap items-center justify-between gap-4 mb-4">
@@ -266,7 +262,7 @@ export default function WatchClient({ videoData }: WatchClientProps) {
                 <div className="flex items-center gap-3">
                   <div className="relative w-10 h-10">
                     <Image
-                      src={videoData.channel.avatar_url || '/avatar-placeholder.png'}
+                      src={videoData.channel.avatar_url || '/default-avatar.png'}
                       alt={videoData.channel.full_name}
                       fill
                       className="object-cover rounded-full"
@@ -279,31 +275,22 @@ export default function WatchClient({ videoData }: WatchClientProps) {
                 </div>
               </Link>
 
-              {isVideoOwner ? (
-                <button
-                  onClick={handleEditVideo}
-                  className="flex items-center gap-2 px-4 py-2 rounded-full bg-[#272727] hover:bg-[#3f3f3f]"
-                >
-                  <Edit className="w-4 h-4" />
-                  <span>Editar video</span>
-                </button>
-              ) : (
+              {!isVideoOwner && (
                 <button
                   onClick={handleSubscribe}
                   disabled={isLoading}
                   className={`px-4 py-2 rounded-full font-medium ${
                     isSubscribed
-                      ? 'bg-[#272727] hover:bg-[#3f3f3f]'
+                      ? 'bg-[#272727] hover:bg-[#3f3f3f] text-white'
                       : 'bg-white text-black hover:bg-zinc-200'
                   }`}
                 >
-                  {isSubscribed ? 'Suscrito' : 'Suscribirse'}
+                  {isLoading ? 'Registrate para suscribrirse' : isSubscribed ? 'Suscrito' : 'Suscribirse'}
                 </button>
               )}
             </div>
 
-            <div className="flex items-center gap-4">
-              <SubscribeButton channelId={videoData.channel.id} />
+            <div className="flex items-center gap-2">
               <div className="flex items-center bg-[#272727] rounded-full">
                 <button
                   onClick={() => handleReaction('like')}
@@ -372,7 +359,6 @@ export default function WatchClient({ videoData }: WatchClientProps) {
             </div>
           </div>
 
-          {/* Description */}
           <div className="mt-4 p-3 bg-[#272727] rounded-xl">
             <div className="flex gap-2 mb-2 text-sm text-zinc-400">
               <span>{formatViewCount(videoData.video.views)} visualizaciones</span>
@@ -392,15 +378,13 @@ export default function WatchClient({ videoData }: WatchClientProps) {
             )}
           </div>
 
-          {/* Comments section */}
           <div className="mt-6">
             <Comments videoId={videoData.video.id} />
           </div>
         </div>
       </div>
 
-      {/* Related videos section - Reducido el padding superior */}
-      <div className="lg:w-[30%] p-3 lg:pt-0"> {/* Cambiado padding */}
+      <div className="lg:w-[30%] p-3 lg:pt-0">
         <RelatedVideos currentVideoId={videoData.video.id} />
       </div>
     </div>

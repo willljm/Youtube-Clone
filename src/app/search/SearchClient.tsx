@@ -56,7 +56,7 @@ export default function SearchClient() {
   }, [query])
 
   return (
-    <div className="p-4">
+    <div className="pt-6 pl-64">
       {loading ? (
         <div className="flex justify-center">
           <div className="w-8 h-8 border-4 border-blue-500 rounded-full border-t-transparent animate-spin" />

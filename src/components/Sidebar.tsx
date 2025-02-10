@@ -21,11 +21,12 @@ import {
 import { MdOutlinePlaylistPlay } from "react-icons/md"
 import { Separator } from "@/components/ui/separator"
 import Image from 'next/image';
-import { useState } from 'react'
+import { useState, useCallback } from 'react'
 import Link from 'next/link'
 import Subscriptions from './Subscriptions'
 import { useUser } from '@/hooks/useUser'
 import { useLayoutStore } from '@/stores/layoutStore'
+import { supabase } from '@/lib/supabase'
 
 interface SidebarProps {
   isExpanded: boolean
@@ -70,6 +71,35 @@ export default function Sidebar() {
   const { user } = useUser()
   const pathname = usePathname()
   const [showMore, setShowMore] = useState(false)
+  const [subscriptions, setSubscriptions] = useState([])
+
+  const loadSubscriptions = useCallback(async () => {
+    if (!user) return
+    
+    try {
+      const { data } = await supabase
+        .from('subscriptions')
+        .select(`
+          channel_id,
+          channel:profiles!subscriptions_channel_id_fkey (
+            id,
+            full_name,
+            avatar_url
+          )
+        `)
+        .eq('user_id', user.id)
+  
+      if (data) {
+        setSubscriptions(data.map(sub => ({
+          id: sub.channel.id,
+          name: sub.channel.full_name,
+          avatar: sub.channel.avatar_url
+        })))
+      }
+    } catch (error) {
+      console.error('Error loading subscriptions:', error)
+    }
+  }, [user])
 
   if (pathname.startsWith('/studio') || pathname.startsWith('/watch')) {
     return null
@@ -188,7 +218,28 @@ export default function Sidebar() {
               {renderSection(masYoutube)}
             </div>
             <Separator className="my-2 bg-[#3f3f3f]" />
-        
+            <div className="pb-4">
+              <h3 className="px-6 py-2 text-sm font-medium text-white">Suscripciones</h3>
+              {subscriptions.map(channel => (
+                <Link
+                  key={channel.id}
+                  href={`/channel/${channel.id}`}
+                  className={`flex items-center gap-4 px-3 py-2 rounded-lg transition-colors ${
+                    pathname === `/channel/${channel.id}` ? 'bg-[#272727]' : 'hover:bg-[#272727]'
+                  }`}
+                >
+                  <div className="relative w-6 h-6">
+                    <Image
+                      src={channel.avatar || '/default-avatar.png'}
+                      alt={channel.name}
+                      fill
+                      className="object-cover rounded-full"
+                    />
+                  </div>
+                  <span className="line-clamp-1">{channel.name}</span>
+                </Link>
+              ))}
+            </div>
           </>
         ) : (
           <div className="px-2 pt-2">
