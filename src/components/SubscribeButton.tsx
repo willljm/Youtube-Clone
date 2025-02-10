@@ -1,59 +1,9 @@
 'use client'
 
-import { useState } from 'react'
-import { supabase } from '@/lib/supabase'
-import { useUser } from '@/hooks/useUser'
-import { toast } from 'sonner'
+import { useSubscription } from '@/hooks/useSubscription'
 
 export default function SubscribeButton({ channelId }: { channelId: string }) {
-  const { user } = useUser()
-  const [isSubscribed, setIsSubscribed] = useState(false)
-  const [isLoading, setIsLoading] = useState(false)
-
-  const handleSubscribe = async () => {
-    if (!user) {
-      toast.error('Debes iniciar sesión para suscribirte')
-      return
-    }
-
-    try {
-      setIsLoading(true)
-      
-      const { data: existingSub } = await supabase
-        .from('subscriptions')
-        .select('*')
-        .eq('user_id', user.id)
-        .eq('channel_id', channelId)
-        .single()
-
-      if (existingSub) {
-        await supabase
-          .from('subscriptions')
-          .delete()
-          .eq('user_id', user.id)
-          .eq('channel_id', channelId)
-
-        setIsSubscribed(false)
-        toast.success('Suscripción cancelada')
-      } else {
-        await supabase
-          .from('subscriptions')
-          .insert({
-            user_id: user.id,
-            channel_id: channelId,
-            created_at: new Date().toISOString()
-          })
-
-        setIsSubscribed(true)
-        toast.success('¡Suscrito al canal!')
-      }
-    } catch (error) {
-      console.error('Error:', error)
-      toast.error('Error al procesar la suscripción')
-    } finally {
-      setIsLoading(false)
-    }
-  }
+  const { isSubscribed, isLoading, handleSubscribe } = useSubscription(channelId)
 
   return (
     <button

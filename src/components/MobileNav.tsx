@@ -5,10 +5,18 @@ import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { useUser } from '@/hooks/useUser'
 import Image from 'next/image'
+import { useState, useEffect } from 'react'
 
 export default function MobileNav() {
   const { user } = useUser()
   const pathname = usePathname()
+  const [avatarUrl, setAvatarUrl] = useState('')
+
+  useEffect(() => {
+    if (user?.user_metadata?.avatar_url) {
+      setAvatarUrl(user.user_metadata.avatar_url)
+    }
+  }, [user])
 
   if (pathname.startsWith('/studio') || pathname.startsWith('/watch')) {
     return null
@@ -51,10 +59,11 @@ export default function MobileNav() {
             <>
               <div className="relative w-6 h-6 mb-1 overflow-hidden rounded-full">
                 <Image
-                  src={user.user_metadata?.avatar_url || '/avatar-placeholder.png'}
+                  src={avatarUrl || '/default-avatar.png'}
                   alt="Avatar"
-                  fill
-                  className="object-cover"
+                  width={24}
+                  height={24}
+                  className="rounded-full"
                 />
               </div>
               <span className={`text-xs ${

@@ -21,7 +21,7 @@ import {
 import { MdOutlinePlaylistPlay } from "react-icons/md"
 import { Separator } from "@/components/ui/separator"
 import Image from 'next/image';
-import { useState, useCallback } from 'react'
+import { useState, useCallback, useEffect } from 'react'
 import Link from 'next/link'
 import Subscriptions from './Subscriptions'
 import { useUser } from '@/hooks/useUser'
@@ -80,7 +80,6 @@ export default function Sidebar() {
       const { data } = await supabase
         .from('subscriptions')
         .select(`
-          channel_id,
           channel:profiles!subscriptions_channel_id_fkey (
             id,
             full_name,
@@ -100,6 +99,10 @@ export default function Sidebar() {
       console.error('Error loading subscriptions:', error)
     }
   }, [user])
+
+  useEffect(() => {
+    loadSubscriptions()
+  }, [loadSubscriptions])
 
   if (pathname.startsWith('/studio') || pathname.startsWith('/watch')) {
     return null
